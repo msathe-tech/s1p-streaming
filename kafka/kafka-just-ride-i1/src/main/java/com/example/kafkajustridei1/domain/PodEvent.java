@@ -2,7 +2,7 @@ package com.example.kafkajustridei1.domain;
 
 import java.io.Serializable;
 
-public class PodEvent implements Serializable {
+public class PodEvent {
 
 	public PodEvent(String uuid, Double latitude, Double longitude, Double speed) {
 		this.uuid = uuid;

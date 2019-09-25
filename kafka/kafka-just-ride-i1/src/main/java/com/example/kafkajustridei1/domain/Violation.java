@@ -1,4 +1,7 @@
 package com.example.kafkajustridei1.domain;
 
-public class Violation {
+import java.io.Serializable;
+
+public class Violation implements Serializable {
+
 }

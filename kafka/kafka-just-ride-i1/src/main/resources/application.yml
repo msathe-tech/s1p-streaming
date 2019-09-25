@@ -1,0 +1,28 @@
+spring.cloud.stream.kstream.binder.configuration.commit.interval.ms: 1000
+spring.cloud.stream.kstream.binder.configuration:
+  default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+  default.value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+
+
+spring:
+  cloud:
+    stream:
+      bindings:
+        pods-out:
+          destination: pods-2
+        pods-in:
+          destination: pods-2
+        overspeed-out:
+          destination: overspeed-2
+
+  #      kafka:
+  #        streams:
+  #          bindings:
+  #            COUNTS_OUT:
+  #              producer:
+  #                useNativeEncoding: true
+  #                key-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+  #                value-serde: org.apache.kafka.common.serialization.Serdes$LongSerde
+
+  application:
+    name: kakfa-just-ride-i1-2
