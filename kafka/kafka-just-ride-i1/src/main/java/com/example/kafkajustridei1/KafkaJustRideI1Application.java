@@ -2,7 +2,7 @@ package com.example.kafkajustridei1;
 
 import com.example.kafkajustridei1.bindings.SpeedCheckBinding;
 import com.example.kafkajustridei1.bindings.ViolationsCheckBinding;
-import com.example.kafkajustridei1.domain.PodEvent;
+import com.example.kafkajustridei1.domain.CarPodEvent;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.KStream;
 import org.slf4j.Logger;
@@ -12,7 +12,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.binder.kafka.streams.annotations.KafkaStreamsProcessor;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 
@@ -31,14 +30,14 @@ public class KafkaJustRideI1Application {
 		static final long SPEED_THRESHOLD = 70L;
 		Logger log = LoggerFactory.getLogger(getClass());
 
-		@StreamListener(SpeedCheckBinding.PODS_IN)
+		@StreamListener(SpeedCheckBinding.CAR_PODS_IN)
 		@SendTo(SpeedCheckBinding.OVERSPEED_OUT)
-		public KStream<String, PodEvent> speedCheck(KStream<Object, PodEvent> podEvents) {
+		public KStream<String, CarPodEvent> speedCheck(KStream<Object, CarPodEvent> podEvents) {
 
-			KStream<String, PodEvent> speedEvents = podEvents
+			KStream<String, CarPodEvent> speedEvents = podEvents
 					.filter((k, v) -> v.getSpeed() > SPEED_THRESHOLD)
-					.map((k, v) -> new KeyValue<String, PodEvent>(new String(v.getUuid()),
-							new PodEvent(v.getUuid(), v.getLatitude(), v.getLongitude(), v.getSpeed())));
+					.map((k, v) -> new KeyValue<String, CarPodEvent>(new String(v.getUuid()),
+							new CarPodEvent(v.getUuid(), v.getLatitude(), v.getLongitude(), v.getSpeed())));
 
 			speedEvents
 					.foreach((k, v) -> log.info(v.toString()));
@@ -47,17 +46,20 @@ public class KafkaJustRideI1Application {
 		}
 	}
 
-//	@EnableBinding(ViolationsCheckBinding.class)
-//	public static class ViolationsCheckProcessor {
-//		static final int WINDOW_SIZE_MS = 10000;
-//
-//		Logger log = LoggerFactory.getLogger(getClass());
-//
-//		@StreamListener(ViolationsCheckBinding.OVERSPEED_IN)
-//		public void violationsCheck(KStream<String, PodEvent> speedEvents) {
-//			speedEvents
-//					.foreach((k, v) -> log.info(v.toString()));
-//		}
-//	}
+	@Component
+	@EnableBinding({ViolationsCheckBinding.class})
+	public static class ViolationsCheckProcessor {
+		static final int WINDOW_SIZE_MS = 10000;
+
+		Logger log = LoggerFactory.getLogger(getClass());
+
+		@StreamListener(ViolationsCheckBinding.OVERSPEED_IN)
+		public void violationsCheck(KStream<String, CarPodEvent> speedEvents) {
+			speedEvents
+					.foreach((k, v) -> log.info("SpeedEvent" + ": " + k));
+		}
+	}
+
+
 
 }

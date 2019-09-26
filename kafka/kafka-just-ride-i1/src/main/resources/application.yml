@@ -8,12 +8,16 @@ spring:
   cloud:
     stream:
       bindings:
-        pods-out:
-          destination: pods
-        pods-in:
-          destination: pods
+        car-pods-out:
+          destination: car-pods
+        car-pods-in:
+          destination: car-pods
+          group: speed-check
         overspeed-out:
           destination: overspeed
+        overspeed-in:
+          destination: overspeed
+          group: violations-check
 
 #        kafka:
 #          streams:

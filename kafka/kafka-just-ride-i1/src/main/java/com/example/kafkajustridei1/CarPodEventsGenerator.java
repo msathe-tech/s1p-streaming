@@ -2,7 +2,7 @@ package com.example.kafkajustridei1;
 
 import java.util.Random;
 
-import com.example.kafkajustridei1.domain.PodEvent;
+import com.example.kafkajustridei1.domain.CarPodEvent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -17,10 +17,10 @@ import org.springframework.integration.core.MessageSource;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.GenericMessage;
 
-public class PodEventsGenerator {
+public class CarPodEventsGenerator {
 
-	@EnableBinding(PodsSource.class)
-	static class PodEventsProducer {
+	@EnableBinding(CarPodsSource.class)
+	static class CarPodEventsProducer {
 		//14
 		private Double[] latidudes = new Double[] {40.742185, 40.752185, 40.652185, 40.65185, 40.95185, 40.99185, 40.9988, 40.7433066, 40.7430, 40.706314, 40.806, 40.816, 40.716, 40.715};
 		//14
@@ -33,8 +33,8 @@ public class PodEventsGenerator {
 		private Random random = new Random();
 
 		@Bean
-		@InboundChannelAdapter(channel = PodsSource.PODS_OUT, poller = @Poller(fixedDelay = "1000"))
-		public MessageSource<PodEvent> generatePodEvents() {
+		@InboundChannelAdapter(channel = CarPodsSource.CAR_PODS_OUT, poller = @Poller(fixedDelay = "1000"))
+		public MessageSource<CarPodEvent> generateCarPodEvents() {
 
 			return () -> {
 				int laIdx, lnIdx, sIdx, uIdx;
@@ -42,23 +42,23 @@ public class PodEventsGenerator {
 				lnIdx = random.nextInt(14);
 				uIdx = random.nextInt(4);
 				sIdx = random.nextInt(14);
-				PodEvent podEvent = new PodEvent(uuids[uIdx],
+				CarPodEvent podEvent = new CarPodEvent(uuids[uIdx],
 						latidudes[laIdx],
 						longitudes[lnIdx],
 						speeds[sIdx]);
 
 				System.out.println(podEvent.toString());
 
-				return new GenericMessage<PodEvent>(podEvent);
+				return new GenericMessage<CarPodEvent>(podEvent);
 			};
 		}
 	}
 
-	interface PodsSource {
+	interface CarPodsSource {
 
-		String PODS_OUT = "pods-out";
+		String CAR_PODS_OUT = "car-pods-out";
 
-		@Output(PodsSource.PODS_OUT)
+		@Output(CarPodsSource.CAR_PODS_OUT)
 		MessageChannel pods();
 
 	}
