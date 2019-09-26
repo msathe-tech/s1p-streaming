@@ -1,6 +1,7 @@
 package com.example.kafkajustridei1.bindings;
 
 import com.example.kafkajustridei1.domain.CarPodEvent;
+import com.example.kafkajustridei1.domain.ViolationEvent;
 import org.apache.kafka.streams.kstream.KStream;
 
 import org.springframework.cloud.stream.annotation.Input;
@@ -12,8 +13,8 @@ public interface ViolationsCheckBinding {
 	@Input(OVERSPEED_IN)
 	KStream<String, CarPodEvent> overSpeedIn();
 
-	public final String VIOLATIONS_OUT = "violations-out";
-
-	@Input(VIOLATIONS_OUT)
-	KStream<String, CarPodEvent> violationsOut();
+//	public final String VIOLATIONS_OUT = "violations-out";
+//
+//	@Input(VIOLATIONS_OUT)
+//	KStream<String, ViolationEvent> violationsOut();
 }

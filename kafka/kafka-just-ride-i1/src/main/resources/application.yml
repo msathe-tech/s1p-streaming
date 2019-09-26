@@ -16,6 +16,8 @@ spring:
           destination: overspeed
         overspeed-in:
           destination: overspeed
+        violations-out:
+          destination: violations
 
       kafka:
         streams:
