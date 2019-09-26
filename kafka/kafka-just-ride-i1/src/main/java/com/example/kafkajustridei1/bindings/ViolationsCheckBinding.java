@@ -12,4 +12,8 @@ public interface ViolationsCheckBinding {
 	@Input(OVERSPEED_IN)
 	KStream<String, CarPodEvent> overSpeedIn();
 
+	public final String VIOLATIONS_OUT = "violations-out";
+
+	@Input(VIOLATIONS_OUT)
+	KStream<String, CarPodEvent> violationsOut();
 }
