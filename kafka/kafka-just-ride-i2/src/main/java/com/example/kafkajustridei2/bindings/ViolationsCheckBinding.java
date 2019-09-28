@@ -8,10 +8,10 @@ import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.Output;
 
 public interface ViolationsCheckBinding {
-	public final String OVERSPEED_IN = "overspeed-in";
-
-	@Input(OVERSPEED_IN)
-	KStream<String, CarPodEvent> overSpeedIn();
+//	public final String OVERSPEED_IN = "overspeed-in";
+//
+//	@Input(OVERSPEED_IN)
+//	KStream<String, CarPodEvent> overSpeedIn();
 
 //	public final String VIOLATIONS_OUT = "violations-out";
 //

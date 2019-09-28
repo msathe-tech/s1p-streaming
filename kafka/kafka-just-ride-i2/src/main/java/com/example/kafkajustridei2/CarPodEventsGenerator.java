@@ -67,13 +67,19 @@ public class CarPodEventsGenerator {
 				Message<?> message = MessageBuilder.withPayload(podEvent)
 						.setHeader(KafkaHeaders.MESSAGE_KEY, podEvent.getUuid()).build();
 
+				try {
+					carPodsOut.send(message);
+				} catch (Exception e){
+					System.out.println(e.getMessage());
+				}
+
+
 			};
 
 			Executors.newScheduledThreadPool(1).scheduleAtFixedRate(runnable, 1, 1, TimeUnit.SECONDS);
 		}
 
 	}
-
 
 }
 

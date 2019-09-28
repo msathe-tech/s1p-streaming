@@ -14,18 +14,20 @@ spring:
           destination: car-pods
         overspeed-out:
           destination: overspeed
-        overspeed-in:
-          destination: overspeed
-        violations-out:
-          destination: violations
+#        overspeed-in:
+#          destination: overspeed
+#        violations-out:
+#          destination: violations
 
-      kafka:
-        streams:
-          bindings:
-            car-pods-in:
-              consumer:
-                applicationId: speed-check
-            overspeed-in:
-              consumer:
-                applicationId: violations-check
+#      kafka:
+#        streams:
+#          bindings:
+#            car-pods-in:
+#              consumer:
+#                applicationId: speed-check
+#            overspeed-in:
+#              consumer:
+#                applicationId: violations-check
 
+  application:
+    name: just-ride-i2
