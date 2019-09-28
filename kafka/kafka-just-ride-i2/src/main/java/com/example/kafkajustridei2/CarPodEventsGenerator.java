@@ -65,7 +65,7 @@ public class CarPodEventsGenerator {
 
 				System.out.println(podEvent.toString());
 				Message<?> message = MessageBuilder.withPayload(podEvent)
-						.setHeader(KafkaHeaders.MESSAGE_KEY, podEvent.getUuid()).build();
+						.setHeader(KafkaHeaders.MESSAGE_KEY, podEvent.getUuid().getBytes()).build();
 
 				try {
 					carPodsOut.send(message);
