@@ -10,15 +10,13 @@ spring:
       bindings:
         car-pods-out:
           destination: car-pods
-          producer:
-            header-mode: raw
+#          producer:
+#            header-mode: raw
         car-pods-in:
           destination: car-pods
-        overspeed-out:
-          destination: overspeed
-        overspeed-in:
-          destination: overspeed
         violations-out:
+          destination: violations
+        violations-in:
           destination: violations
 
       kafka:
@@ -27,6 +25,6 @@ spring:
             car-pods-in:
               consumer:
                 applicationId: speed-check
-            overspeed-in:
+            violations-in:
               consumer:
                 applicationId: violations-check

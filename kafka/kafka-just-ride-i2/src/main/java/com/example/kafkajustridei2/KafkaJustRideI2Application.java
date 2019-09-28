@@ -43,41 +43,59 @@ public class KafkaJustRideI2Application {
 
 
 	@Component
-	@EnableBinding({ViolationsCheckBinding.class})
-	public static class ViolationsCheckProcessor {
-		static final int WINDOW_SIZE_MS = 10000;
-		static final String WINDOW_STORE = "violation-events";
+	@EnableBinding(ViolationsCheckBinding.class)
+	public static class ViolationsStream {
 
 		Logger log = LoggerFactory.getLogger(getClass());
 
-		@StreamListener(ViolationsCheckBinding.OVERSPEED_IN)
-		//@SendTo(ViolationsCheckBinding.VIOLATIONS_OUT)
-		public void violationsCheck(KStream<String, CarPodEvent> speedEvents) {
-			speedEvents
-					.foreach((k, v) -> log.info("SpeedEvent" + ": " + k));
+		@StreamListener(ViolationsCheckBinding.VIOLATIONS_IN)
+		public void processViolations(KStream<String, ViolationEvent> violations) {
 
-			ObjectMapper podEventMapper = new ObjectMapper();
-			Serde<CarPodEvent> podEventSerde = new JsonSerde<>(CarPodEvent.class, podEventMapper);
+			violations
+					.foreach((k, v) -> log.info("ViolationCheck: uuid = " + k + ", count= " + v.getCarPodEvents().size()));
 
-			ObjectMapper violationEventMapper = new ObjectMapper();
-			Serde<ViolationEvent> violationEventSerde = new JsonSerde<>(ViolationEvent.class, violationEventMapper);
-
-			KStream<Windowed<String>, ViolationEvent> violationEventsWindowedStream = speedEvents
-					.groupBy((k, v) -> v.getUuid(), Serialized.with(Serdes.String(), podEventSerde))
-					.windowedBy(TimeWindows.of(WINDOW_SIZE_MS))
-					.<ViolationEvent>aggregate(ViolationEvent::new,
-							(k, carPodEvent, violationEvent) -> violationEvent.addCarPodEvent(carPodEvent),
-							Materialized.<String, ViolationEvent, WindowStore<Bytes, byte[]>>as(WINDOW_STORE)
-									.withKeySerde(Serdes.String())
-									.withValueSerde(violationEventSerde))
-					.mapValues((violationEvent) -> violationEvent.closeWindow())
-					.toStream();
-
-
-			violationEventsWindowedStream
-					.foreach((k, v) -> log.info(v.toString()));
 		}
+
 	}
+
+
+
+//	@Component
+//	@EnableBinding({ViolationsCheckBinding.class})
+//	public static class ViolationsCheckProcessor {
+//		static final int WINDOW_SIZE_MS = 10000;
+//		static final String WINDOW_STORE = "violation-events";
+//
+//		Logger log = LoggerFactory.getLogger(getClass());
+//
+//		@StreamListener(ViolationsCheckBinding.OVERSPEED_IN)
+//		//@SendTo(ViolationsCheckBinding.VIOLATIONS_OUT)
+//		public void violationsCheck(KStream<String, CarPodEvent> speedEvents) {
+//			speedEvents
+//					.foreach((k, v) -> log.info("SpeedEvent" + ": " + k));
+//
+//			ObjectMapper podEventMapper = new ObjectMapper();
+//			Serde<CarPodEvent> podEventSerde = new JsonSerde<>(CarPodEvent.class, podEventMapper);
+//
+//			ObjectMapper violationEventMapper = new ObjectMapper();
+//			Serde<ViolationEvent> violationEventSerde = new JsonSerde<>(ViolationEvent.class, violationEventMapper);
+//
+//			KStream<Windowed<String>, ViolationEvent> violationEventsWindowedStream = speedEvents
+//					.groupBy((k, v) -> v.getUuid(), Serialized.with(Serdes.String(), podEventSerde))
+//					.windowedBy(TimeWindows.of(WINDOW_SIZE_MS))
+//					.<ViolationEvent>aggregate(ViolationEvent::new,
+//							(k, carPodEvent, violationEvent) -> violationEvent.addCarPodEvent(carPodEvent),
+//							Materialized.<String, ViolationEvent, WindowStore<Bytes, byte[]>>as(WINDOW_STORE)
+//									.withKeySerde(Serdes.String())
+//									.withValueSerde(violationEventSerde))
+//					.mapValues((violationEvent) -> violationEvent.closeWindow())
+//					.toStream();
+//
+//
+//			violationEventsWindowedStream
+//					.foreach((k, v) -> log.info(v.toString()));
+//		}
+//	}
 
 }
 

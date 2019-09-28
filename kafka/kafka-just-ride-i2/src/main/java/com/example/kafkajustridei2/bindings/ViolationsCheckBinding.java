@@ -8,13 +8,9 @@ import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.Output;
 
 public interface ViolationsCheckBinding {
-	public final String OVERSPEED_IN = "overspeed-in";
+	public final String VIOLATIONS_IN = "violations-in";
 
-	@Input(OVERSPEED_IN)
-	KStream<String, CarPodEvent> overSpeedIn();
+	@Input(VIOLATIONS_IN)
+	KStream<String, ViolationEvent> violationsIn();
 
-	public final String VIOLATIONS_OUT = "violations-out";
-
-	@Input(VIOLATIONS_OUT)
-	KStream<String, ViolationEvent> violationsOut();
 }

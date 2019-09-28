@@ -10,10 +10,18 @@ import java.util.ListIterator;
 
 public class ViolationEvent {
 
+	static final long SPEED_THRESHOLD = 60L;
+
 	private String uuid;
 	private List<CarPodEvent> carPodEvents;
 	private long start;
 	private long end;
+
+	public int getViolationCount() {
+		return violationCount;
+	}
+
+	private int violationCount;
 
 	@Override
 	public String toString() {
@@ -28,6 +36,9 @@ public class ViolationEvent {
 	public ViolationEvent addCarPodEvent(CarPodEvent cpe) {
 		if(uuid == null)
 			uuid = cpe.getUuid();
+
+		if(cpe.getSpeed() > SPEED_THRESHOLD)
+			violationCount++;
 
 		carPodEvents.add(cpe);
 		return this;
