@@ -28,8 +28,8 @@ public class ViolationEvent {
 		return "ViolationEvent{" +
 				"uuid='" + uuid + '\'' +
 				", count=" + carPodEvents.size() +
-				", start=" + new Date(start * 1000) +
-				", end=" + new Date(end * 1000)  +
+				", start=" + new Date(start) +
+				", end=" + new Date(end)  +
 				'}';
 	}
 

@@ -27,4 +27,4 @@ spring:
                 applicationId: speed-check
             violations-in:
               consumer:
-                applicationId: violations-check
+                applicationId: violations

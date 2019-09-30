@@ -12,12 +12,11 @@ import org.springframework.cloud.stream.annotation.Output;
 public interface SpeedCheckBinding {
 	public final String CAR_PODS_IN = "car-pods-in";
 
-
 	@Input(CAR_PODS_IN)
 	KStream<String, CarPodEvent> podsIn();
 
 	public final String VIOLATIONS_OUT = "violations-out";
 
-	@Input(VIOLATIONS_OUT)
+	@Output(VIOLATIONS_OUT)
 	KStream<String, ViolationEvent> violationsOut();
 }
