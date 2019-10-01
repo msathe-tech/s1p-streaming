@@ -1,7 +1,7 @@
 package com.example.kafkajustridei2.streams;
 
 import com.example.kafkajustridei2.bindings.SpeedCheckBinding;
-import com.example.kafkajustridei2.domain.CarPodEvent;
+import com.example.kafkajustridei2.domain.CarEvent;
 import com.example.kafkajustridei2.domain.ViolationEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Serde;
@@ -11,10 +11,8 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.TimeWindows;
-import org.apache.kafka.streams.kstream.Windowed;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.apache.kafka.streams.state.ReadOnlyWindowStore;
 import org.apache.kafka.streams.state.WindowStore;
 import org.slf4j.Logger;
@@ -42,14 +40,14 @@ public class SpeedCheckStream {
 
 	@StreamListener(SpeedCheckBinding.CAR_PODS_IN)
 	@SendTo(SpeedCheckBinding.VIOLATIONS_OUT)
-	public KStream<String, ViolationEvent> speedCheck(KStream<String, CarPodEvent> podEvents) {
-		podEvents
+	public KStream<String, ViolationEvent> speedCheck(KStream<String, CarEvent> carEvents) {
+		carEvents
 				.foreach((k, v) -> log.info("PodEvent: " + "key = " + k + ", speed = " + v.getSpeed()));
 
 		ObjectMapper violationEventMapper = new ObjectMapper();
 		Serde<ViolationEvent> violationEventSerde = new JsonSerde<>(ViolationEvent.class, violationEventMapper);
 
-		KStream<String, ViolationEvent> violations = podEvents
+		KStream<String, ViolationEvent> violations = carEvents
 				.groupByKey()
 				.windowedBy(TimeWindows.of(WINDOW_SIZE_MS))
 				.<ViolationEvent>aggregate(ViolationEvent::new,
@@ -67,20 +65,6 @@ public class SpeedCheckStream {
 				.foreach((k, v) -> log.info("VIOLATION key= " + k + ", value =" + v.toString()));
 
 		return violations;
-	}
-
-	@Scheduled(fixedRate = 3000, initialDelay = 5000)
-	public void printViolatons() {
-		System.out.println("Hitting the store");
-		ReadOnlyWindowStore<Object, Object> violationsStore = iqs
-				.getQueryableStore(WINDOW_STORE, QueryableStoreTypes.windowStore());
-
-		KeyValueIterator all = violationsStore.all();
-
-		all.forEachRemaining(o -> {
-			log.info("From store " + ((KeyValue)o).key + ", count = " + ((ViolationEvent)((KeyValue)o).value).getViolationCount());
-		});
-
 	}
 
 }

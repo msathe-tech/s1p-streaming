@@ -2,16 +2,16 @@ package com.example.kafkajustridei2.domain;
 
 import java.io.Serializable;
 
-public class CarPodEvent {
+public class CarEvent {
 
-	public CarPodEvent(String uuid, Double latitude, Double longitude, Double speed) {
+	public CarEvent(String uuid, Double latitude, Double longitude, Double speed) {
 		this.uuid = uuid;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.speed = speed;
 	}
 
-	public CarPodEvent() {
+	public CarEvent() {
 	}
 
 	public void setUuid(String uuid) {
@@ -32,7 +32,7 @@ public class CarPodEvent {
 
 	@Override
 	public String toString() {
-		return "CarPodEvent{" +
+		return "CarEvent{" +
 				"uuid=" + uuid +
 				", latitude=" + latitude +
 				", longitude=" + longitude +

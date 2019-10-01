@@ -65,11 +65,10 @@ Group the bindings in an internface based on the streaming application needs.
 
 ### create stream method 
 1. checkSpeed method with @StreamListener and @SendTo 
-2. checkSpeed(KStream<String, CarPodEvent> carPodEvents)
+2. checkSpeed(KStream<String, CarPodEvent> carEvents)
 ##### create SerDe
-1. Serde<CarPodEvent> podEventSerde = new JsonSerde<>(CarPodEvent.class, new ObjectMapper());
 1. Serde<ViolationEvent> violationEventSerde = new JsonSerde<>(ViolationEvent.class, new ObjectMapper());
-##### process and transform the 'carPodEvents' stream
+##### process and transform the 'carEvents' stream
 1. ```.groupByKey() // group by UUID```
 
 1. ```.windowedBy(TimeWindows.of(WINDOW_SIZE_MS)) // window of WINDOW_SIZE_MS for each UUID```

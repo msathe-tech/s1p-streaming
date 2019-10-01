@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.example.kafkajustridei2.domain.CarPodEvent;
+import com.example.kafkajustridei2.domain.CarEvent;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -19,13 +19,13 @@ import org.springframework.stereotype.Component;
 public class CarPodEventsGenerator {
 
 	@Component
-	@EnableBinding(CarPodsSource.class)
-	public static class CarPodEventsProducer implements ApplicationRunner {
+	@EnableBinding(CarEventsSource.class)
+	public static class CarEventsProducer implements ApplicationRunner {
 
-		private final MessageChannel carPodsOut;
+		private final MessageChannel carEventsOut;
 
-		public CarPodEventsProducer(CarPodsSource binding) {
-			carPodsOut = binding.pods();
+		public CarEventsProducer(CarEventsSource binding) {
+			carEventsOut = binding.carEventsOut();
 		}
 
 		@Override
@@ -47,21 +47,20 @@ public class CarPodEventsGenerator {
 				lnIdx = random.nextInt(14);
 				uIdx = random.nextInt(4);
 				sIdx = random.nextInt(14);
-				CarPodEvent podEvent = new CarPodEvent(uuids[uIdx],
+				CarEvent carEvent = new CarEvent(uuids[uIdx],
 						latidudes[laIdx],
 						longitudes[lnIdx],
 						speeds[sIdx]);
 
-				System.out.println(podEvent.toString());
-				Message<?> message = MessageBuilder.withPayload(podEvent)
-						.setHeader(KafkaHeaders.MESSAGE_KEY, podEvent.getUuid().getBytes()).build();
+				System.out.println(carEvent.toString());
+				Message<?> message = MessageBuilder.withPayload(carEvent)
+						.setHeader(KafkaHeaders.MESSAGE_KEY, carEvent.getUuid().getBytes()).build();
 
 				try {
-					carPodsOut.send(message);
+					carEventsOut.send(message);
 				} catch (Exception e){
 					System.out.println(e.getMessage());
 				}
-
 
 			};
 
@@ -72,11 +71,11 @@ public class CarPodEventsGenerator {
 
 }
 
-interface CarPodsSource {
+interface CarEventsSource {
 
 	public String CAR_PODS_OUT = "car-pods-out";
 
-	@Output(CarPodsSource.CAR_PODS_OUT)
-	MessageChannel pods();
+	@Output(CarEventsSource.CAR_PODS_OUT)
+	MessageChannel carEventsOut();
 
 }

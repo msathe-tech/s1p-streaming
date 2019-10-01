@@ -1,19 +1,15 @@
 package com.example.kafkajustridei2.domain;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 public class ViolationEvent {
 
 	static final long SPEED_THRESHOLD = 60L;
 
 	private String uuid;
-	private List<CarPodEvent> carPodEvents;
+	private List<CarEvent> carEvents;
 	private long start;
 	private long end;
 
@@ -27,20 +23,21 @@ public class ViolationEvent {
 	public String toString() {
 		return "ViolationEvent{" +
 				"uuid='" + uuid + '\'' +
-				", count=" + carPodEvents.size() +
+				", count=" + violationCount +
 				", start=" + new Date(start) +
 				", end=" + new Date(end)  +
 				'}';
 	}
 
-	public ViolationEvent addCarPodEvent(CarPodEvent cpe) {
+	public ViolationEvent addCarPodEvent(CarEvent cpe) {
 		if(uuid == null)
 			uuid = cpe.getUuid();
 
-		if(cpe.getSpeed() > SPEED_THRESHOLD)
+		if(cpe.getSpeed() > SPEED_THRESHOLD) {
 			violationCount++;
+			carEvents.add(cpe);
+		}
 
-		carPodEvents.add(cpe);
 		return this;
 	}
 
@@ -57,12 +54,12 @@ public class ViolationEvent {
 		this.uuid = uuid;
 	}
 
-	public List<CarPodEvent> getCarPodEvents() {
-		return carPodEvents;
+	public List<CarEvent> getCarEvents() {
+		return carEvents;
 	}
 
-	public void setCarPodEvents(List<CarPodEvent> carPodEvents) {
-		this.carPodEvents = carPodEvents;
+	public void setCarEvents(List<CarEvent> carEvents) {
+		this.carEvents = carEvents;
 	}
 
 	public long getStart() {
@@ -82,7 +79,7 @@ public class ViolationEvent {
 	}
 
 	public ViolationEvent() {
-		carPodEvents = new ArrayList<CarPodEvent>();
+		carEvents = new ArrayList<CarEvent>();
 		start = new Date().getTime();
 	}
 }

@@ -9,11 +9,9 @@ spring:
     stream:
       bindings:
         car-pods-out:
-          destination: car-pods
-#          producer:
-#            header-mode: raw
+          destination: car-events
         car-pods-in:
-          destination: car-pods
+          destination: car-events
         violations-out:
           destination: violations
         violations-in:
@@ -27,4 +25,4 @@ spring:
                 applicationId: speed-check
             violations-in:
               consumer:
-                applicationId: violations
+                applicationId: violations-check
