@@ -29,10 +29,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableBinding(SpeedCheckBinding.class)
 public class SpeedCheckStream {
 
-	@Autowired
-	private InteractiveQueryService iqs;
-
-
 	Logger log = LoggerFactory.getLogger(getClass());
 	static final int WINDOW_SIZE_MS = 10000;
 	static final String WINDOW_STORE = "violation-events";
