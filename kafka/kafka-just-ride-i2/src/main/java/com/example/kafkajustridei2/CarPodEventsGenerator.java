@@ -73,9 +73,9 @@ public class CarPodEventsGenerator {
 
 interface CarEventsSource {
 
-	public String CAR_PODS_OUT = "car-pods-out";
+	public String CAR_EVENTS_OUT = "car-events-out";
 
-	@Output(CarEventsSource.CAR_PODS_OUT)
+	@Output(CarEventsSource.CAR_EVENTS_OUT)
 	MessageChannel carEventsOut();
 
 }

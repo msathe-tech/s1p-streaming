@@ -1,5 +1,7 @@
 package com.example.kafkajustridei2.streams;
 
+import javax.xml.parsers.SAXParser;
+
 import com.example.kafkajustridei2.bindings.SpeedCheckBinding;
 import com.example.kafkajustridei2.domain.CarEvent;
 import com.example.kafkajustridei2.domain.ViolationEvent;
@@ -26,15 +28,16 @@ import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import static org.apache.kafka.streams.kstream.Materialized.as;
+
 @EnableBinding(SpeedCheckBinding.class)
 public class SpeedCheckStream {
 
 	Logger log = LoggerFactory.getLogger(getClass());
-	static final int WINDOW_SIZE_MS = 10000;
-	static final String WINDOW_STORE = "violation-events";
+	final String WINDOW_STORE = "violations-store";
+	final int WINDOW_SIZE_MS = 30000;
 
-
-	@StreamListener(SpeedCheckBinding.CAR_PODS_IN)
+	@StreamListener(SpeedCheckBinding.CAR_EVENTS_IN)
 	@SendTo(SpeedCheckBinding.VIOLATIONS_OUT)
 	public KStream<String, ViolationEvent> speedCheck(KStream<String, CarEvent> carEvents) {
 		carEvents
@@ -46,8 +49,8 @@ public class SpeedCheckStream {
 		KStream<String, ViolationEvent> violations = carEvents
 				.groupByKey()
 				.windowedBy(TimeWindows.of(WINDOW_SIZE_MS))
-				.<ViolationEvent>aggregate(ViolationEvent::new,
-						(k, carPodEvent, violationEvent) -> violationEvent.addCarPodEvent(carPodEvent),
+				.aggregate(ViolationEvent::new,
+						(k, carPodEvent, violationEvent) -> violationEvent.addCarEvent(carPodEvent),
 						Materialized.<String, ViolationEvent, WindowStore<Bytes, byte[]>>as(WINDOW_STORE)
 								.withKeySerde(Serdes.String())
 								.withValueSerde(violationEventSerde))

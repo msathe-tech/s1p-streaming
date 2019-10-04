@@ -29,7 +29,7 @@ public class ViolationEvent {
 				'}';
 	}
 
-	public ViolationEvent addCarPodEvent(CarEvent cpe) {
+	public ViolationEvent addCarEvent(CarEvent cpe) {
 		if(uuid == null)
 			uuid = cpe.getUuid();
 

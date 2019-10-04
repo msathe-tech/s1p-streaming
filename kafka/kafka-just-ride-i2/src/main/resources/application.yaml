@@ -8,9 +8,9 @@ spring:
   cloud:
     stream:
       bindings:
-        car-pods-out:
+        car-events-out:
           destination: car-events
-        car-pods-in:
+        car-events-in:
           destination: car-events
         violations-out:
           destination: violations
@@ -20,7 +20,7 @@ spring:
       kafka:
         streams:
           bindings:
-            car-pods-in:
+            car-events-in:
               consumer:
                 applicationId: speed-check
             violations-in:
