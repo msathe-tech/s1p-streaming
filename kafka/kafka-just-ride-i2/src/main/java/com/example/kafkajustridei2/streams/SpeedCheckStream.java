@@ -1,34 +1,27 @@
 package com.example.kafkajustridei2.streams;
 
-import javax.xml.parsers.SAXParser;
-
 import com.example.kafkajustridei2.bindings.SpeedCheckBinding;
 import com.example.kafkajustridei2.domain.CarEvent;
 import com.example.kafkajustridei2.domain.ViolationEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.TimeWindows;
-import org.apache.kafka.streams.state.KeyValueIterator;
-import org.apache.kafka.streams.state.QueryableStoreTypes;
-import org.apache.kafka.streams.state.ReadOnlyWindowStore;
+
 import org.apache.kafka.streams.state.WindowStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
+
 import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.scheduling.annotation.Scheduled;
 
-import static org.apache.kafka.streams.kstream.Materialized.as;
 
 @EnableBinding(SpeedCheckBinding.class)
 public class SpeedCheckStream {
@@ -41,7 +34,7 @@ public class SpeedCheckStream {
 	@SendTo(SpeedCheckBinding.VIOLATIONS_OUT)
 	public KStream<String, ViolationEvent> speedCheck(KStream<String, CarEvent> carEvents) {
 		carEvents
-				.foreach((k, v) -> log.info("PodEvent: " + "key = " + k + ", speed = " + v.getSpeed()));
+				.foreach((k, v) -> log.info("CarEvent: " + "key = " + k + ", speed = " + v.getSpeed()));
 
 		ObjectMapper violationEventMapper = new ObjectMapper();
 		Serde<ViolationEvent> violationEventSerde = new JsonSerde<>(ViolationEvent.class, violationEventMapper);

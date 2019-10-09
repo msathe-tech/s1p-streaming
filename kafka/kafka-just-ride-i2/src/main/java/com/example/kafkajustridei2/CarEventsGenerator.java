@@ -16,7 +16,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
-public class CarPodEventsGenerator {
+public class CarEventsGenerator {
 
 	@Component
 	@EnableBinding(CarEventsSource.class)
